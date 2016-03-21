@@ -1,0 +1,18 @@
+{
+  "name": "jessicadigital/drupalbase",
+  "description": "Drupal 8 base module providing assorted functionality.",
+  "type": "drupal-module",
+  "homepage": "https://github.com/jessicadigital/drupalbase",
+  "authors": [
+    {
+      "name": "Jessica",
+      "email": "code@jessica.digital",
+      "homepage": "http://jessica.digital/",
+      "role": "Maintainer"
+    }
+  ],
+  "license": "GPL-2.0+",
+  "minimum-stability": "dev",
+  "require": { }
+}
+
