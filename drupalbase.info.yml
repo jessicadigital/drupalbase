@@ -1,0 +1,5 @@
+type: module
+name: Drupal Base
+description: 'Drupal 8 base module providing assorted functionality.'
+package: JessicaDigital
+core: 8.x
