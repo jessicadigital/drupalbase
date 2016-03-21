@@ -1,0 +1,16 @@
+<?php
+
+/* Debug EFQ queries via tag
+ * Inspired by http://drupal.stackexchange.com/questions/36542/debug-entityfieldquery
+ */
+function drupalbase_query_alter($query) {
+    if ($query->hasTag('debugthis')) {
+        $sql = (string)$query;
+        $connection = \Drupal\Core\Database\Database::getConnection();
+        foreach ((array) $query->arguments() as $key => $val) {
+          $quoted[$key] = $connection->quote($val);
+        }
+        $sql = strtr($sql, $quoted);
+        dd($sql);
+    }
+}
