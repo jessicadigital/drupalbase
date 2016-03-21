@@ -10,6 +10,7 @@
 namespace Drupal\drupalbase\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Url;
 
 
@@ -26,47 +27,29 @@ class OlderNewerBlock extends BlockBase {
 
   // Current node
   private $node;
-  
-  // Current node type
-  private $type;
     
   /**
    * {@inheritdoc}
    */
   public function build() {
 
-    //Get the created time of the current node
+    // Get the created time of the current node
     $this->node = \Drupal::request()->attributes->get('node');
+
+    $newer = $this->generateLink('newer');
+    $older = $this->generateLink('older');
     
-    $created_time = $this->node->getCreatedTime();
-    $link = '';
-
-    $link .= $this->generatePrevious($created_time);
-    $link .= $this->generateNext($created_time);
-
-    return array('#markup' => $link);
-  }
-
-  /**
-   * Lookup the previous node, i.e. youngest node which is still older than the node
-   * currently being viewed.
-   *
-   * @param  string $created_time A unix time stamp
-   * @return string               an html link to the previous node
-   */
-  private function generatePrevious($created_time) {
-    return $this->generateNextPrevious('prev', $created_time);
-  }
-
-  /**
-   * Lookup the next node, i.e. oldest node which is still younger than the node
-   * currently being viewed.
-   *
-   * @param  string $created_time A unix time stamp
-   * @return string               an html link to the next node
-   */
-  private function generateNext($created_time) {
-    return $this->generateNextPrevious('next', $created_time);
+    return [
+        '#cache' => [
+            'contexts' => [
+                'url'
+            ],
+            'max-age' => 0
+        ],
+        '#markup' => (empty($older)?'':\Drupal::l('Older', $older)).(empty($newer)?'':\Drupal::l('Newer', $newer)),
+        'newer' => $newer,
+        'older' => $older
+    ];
   }
 
   /**
@@ -76,23 +59,21 @@ class OlderNewerBlock extends BlockBase {
    * @param  string $created_time a Unix time stamp
    * @return string               an html link to the next or previous node
    */
-  private function generateNextPrevious($direction = 'next', $created_time) {
+  private function generateLink($direction = 'newer') {
 
-    if ($direction === 'next') {
+    if ($direction === 'newer') {
       $comparison_operator = '>';
       $sort = 'ASC';
-      $display_text = t('Newer');
     }
-    elseif ($direction === 'prev') {
+    elseif ($direction === 'older') {
       $comparison_operator = '<';
       $sort = 'DESC';
-      $display_text = t('Older');
     }
 
     //Lookup 1 node younger (or older) than the current node
     $query = \Drupal::entityQuery('node');
-    $next = $query->condition('created', $created_time, $comparison_operator)
-      ->condition('type', $this->type)
+    $next = $query->condition('created', $this->node->getCreatedTime(), $comparison_operator)
+      ->condition('type', $this->node->getType())
       ->sort('created', $sort)
       ->range(0, 1)
       ->execute();
@@ -103,13 +84,19 @@ class OlderNewerBlock extends BlockBase {
       $next = $next[0];
 
       //Find the alias of the next node
-      $next_url = \Drupal::service('path.alias_manager')->getAliasByPath('node/' . $next);
+      $next_url = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'.$next);
 
       //Build the URL of the next node
-      $next_url = Url::fromUri('base://' . $next_url);
-
-      //Build the HTML for the next node
-      return \Drupal::l($display_text, $next_url);
+      return Url::fromUri('base:/' . $next_url);
     }
+  }
+  
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheContexts() {
+    // The "Help" block must be cached per URL: help is defined for a
+    // given path, and does not come with any access restrictions.
+    return Cache::mergeContexts(parent::getCacheContexts(), ['url']);
   }
 }
