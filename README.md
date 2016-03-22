@@ -41,4 +41,4 @@ Automatically generates a sitemap of live Pages and Articles at the URL: ```/sit
 
 ### 4. Throw a 404 with specific routes
 
-This is adds functionality to throw a 404 on routes that begin with 'disable-direct-access' - in a basic sense this replicates the RabbitHole module functionality, which as yet has not been ported to D8. Use with Pathauto module, and set up appropriate patterns for the content you don't wish to be accessed directly.
+This adds functionality to throw a 404 on routes that begin with 'disable-direct-access' - in a basic sense this replicates the RabbitHole module functionality, which as yet has not been ported to D8. Use with Pathauto module, and set up appropriate patterns for the content you don't wish to be accessed directly.
