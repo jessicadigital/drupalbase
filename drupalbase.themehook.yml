@@ -1,0 +1,6 @@
+drupalbase_sitemap:
+  variables:
+    articles: null
+    pages: null
+    title: 'Sitemap'
+  template: 'block/block--sitemap'

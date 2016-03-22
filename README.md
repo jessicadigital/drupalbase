@@ -34,3 +34,7 @@ Note that the block will need to be assigned to a region - normally the bottom o
 ### 2. Query debugging
 
 Drupal 8 does not come with a built in method for debugging EntityFieldQueries. By adding the tag ```debugthis``` to your query, the raw SQL will be dumped into the ```/tmp/drupal_debug.txt``` file.
+
+### 3. Sitemap
+
+Automatically generates a sitemap of live Pages and Articles at the URL: ```/sitemap```.

@@ -1,5 +1,22 @@
 <?php
 
+use Symfony\Component\Yaml\Yaml;
+
+/* Theme hook - Load config from drupalbase.themehook.yml
+ */
+function drupalbase_theme() {
+    return Yaml::parse(file_get_contents(dirname(__FILE__).'/drupalbase.themehook.yml'));
+}
+
+function drupalbase_theme_suggestions_alter(array &$suggestions, array $variables, $hook){
+    if (strpos($hook, 'drupalbase_') === 0) {
+        $themesuggestions = Yaml::parse(file_get_contents(dirname(__FILE__).'/drupalbase.themesuggestions.yml'));
+        if (!empty($themesuggestions[$hook])) {
+            $suggestions = array_merge($suggestions, $themesuggestions[$hook]);
+        }
+    }
+}
+
 /* Debug EFQ queries via tag
  * Inspired by http://drupal.stackexchange.com/questions/36542/debug-entityfieldquery
  */
