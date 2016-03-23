@@ -1,0 +1,25 @@
+{% if pages is not empty %}
+    <div class="sitemap">
+        <h3>Pages</h3>
+        <ul class="sitemap-list">
+            {% for page in pages %}
+                <li>
+                    <a href="{{ page.url }}">{{ page.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+{% if articles is not empty %}
+    <div class="sitemap">
+        <h3>Articles</h3>
+        <ul class="sitemap-list">
+            {% for article in articles %}
+                <li>
+                    <a href="{{ article.url }}">{{ article.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
