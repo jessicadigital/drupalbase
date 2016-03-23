@@ -1,0 +1,5 @@
+services:
+  drupalbase.kernelrequestsubscriber:
+    class: Drupal\drupalbase\EventSubscriber\KernelRequestSubscriber
+    tags:
+    - { name: event_subscriber }
