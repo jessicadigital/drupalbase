@@ -42,3 +42,11 @@ Automatically generates a sitemap of live Pages and Articles at the URL: ```/sit
 ### 4. Throw a 404 with specific routes
 
 This adds functionality to throw a 404 on routes that begin with 'disable-direct-access' - in a basic sense this replicates the RabbitHole module functionality, which as yet has not been ported to D8. Use with Pathauto module, and set up appropriate patterns for the content you don't wish to be accessed directly.
+
+### 5. Change Login and Logout URLs
+
+By default, Drupal uses the ```/user/login``` and ```/user/logout``` URLs for login and logout functionality. For security purposes, it's generally a good idea to change these to something different. The drupalbase plugin changes these paths to ```/mylogin``` and ```/mylogout```.
+
+### 6. Hide default node page
+
+Drupal creates a WordPress-style feed page at the ```/node``` URL. Many websites do not hide this, allowing access to supposedly hidden content and an unstyled user experience. Drupalbase prevents access to the ```/node``` page.

@@ -3,3 +3,7 @@ services:
     class: Drupal\drupalbase\EventSubscriber\KernelRequestSubscriber
     tags:
     - { name: event_subscriber }
+  drupalbase.routesubscriber:
+    class: Drupal\drupalbase\EventSubscriber\RouteSubscriber
+    tags:
+    - { name: event_subscriber }
