@@ -50,3 +50,7 @@ By default, Drupal uses the ```/user/login``` and ```/user/logout``` URLs for lo
 ### 6. Hide default node page
 
 Drupal creates a WordPress-style feed page at the ```/node``` URL. Many websites do not hide this, allowing access to supposedly hidden content and an unstyled user experience. Drupalbase prevents access to the ```/node``` page.
+
+### 7. Custom menus
+
+When designing page layouts, it can be useful to output custom menus in different templates. The ```display_menu()``` twig function allows you to output individual menus in any template.

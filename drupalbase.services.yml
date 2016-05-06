@@ -7,3 +7,7 @@ services:
     class: Drupal\drupalbase\EventSubscriber\RouteSubscriber
     tags:
     - { name: event_subscriber }
+  drupalbase.twigextension:
+    class: Drupal\drupalbase\Twig\TwigExtension
+    tags:
+      - { name: twig.extension }
