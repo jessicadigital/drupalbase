@@ -1,7 +1,0 @@
-drupalbase.sitemap:
-  path: 'sitemap'
-  defaults:
-    _controller: '\Drupal\drupalbase\Controller\SitemapController::content'
-    _title: 'Sitemap'
-  requirements:
-    _permission: 'access content'

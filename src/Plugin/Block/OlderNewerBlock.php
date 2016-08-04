@@ -3,7 +3,7 @@
 /**
  * @file
  * Contains \Drupal\drupalbase\Plugin\Block\OlderNewerBlock.
- * 
+ *
  * Inspired by http://www.blinkreaction.com/blog/create-a-simple-nextprevious-navigation-in-drupal-8
  */
 
@@ -12,13 +12,17 @@ namespace Drupal\drupalbase\Plugin\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Url;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Access\AccessResult;
 
 
 /**
  * Provides a 'Older Newer' block.
  *
  * @Block(
- *   id = "older_newer_block",
+ *   id = "oldernewerblock",
  *   admin_label = @Translation("Older Newer Block"),
  *   category = @Translation("Blocks")
  * )
@@ -27,7 +31,16 @@ class OlderNewerBlock extends BlockBase {
 
   // Current node
   private $node;
-    
+
+  /**
+   * {@inheritdoc}
+   * Allow All
+   */
+   public function access(AccountInterface $account, $return_as_object = FALSE) {
+     $access = AccessResult::allowedIfHasPermission($account, 'access content');
+     return $return_as_object ? $access : $access->isAllowed();
+    }
+
   /**
    * {@inheritdoc}
    */
@@ -38,7 +51,15 @@ class OlderNewerBlock extends BlockBase {
 
     $newer = $this->generateLink('newer');
     $older = $this->generateLink('older');
-    
+
+    $markup = '';
+    if (!empty($older)) {
+        $markup .= '<a class="btn btn-tertiary btn-previous" href="'.$older->toString().'">Older</a>';
+    }
+    if (!empty($newer)) {
+        $markup .= '<a class="btn btn-tertiary btn-next pull-right" href="'.$newer->toString().'">Newer</a>';
+    }
+
     return [
         '#cache' => [
             'contexts' => [
@@ -46,9 +67,7 @@ class OlderNewerBlock extends BlockBase {
             ],
             'max-age' => 0
         ],
-        '#markup' => (empty($older)?'':\Drupal::l('Older', $older)).(empty($newer)?'':\Drupal::l('Newer', $newer)),
-        'newer' => $newer,
-        'older' => $older
+        '#markup' => $markup
     ];
   }
 
@@ -90,7 +109,7 @@ class OlderNewerBlock extends BlockBase {
       return Url::fromUri('base:/' . $next_url);
     }
   }
-  
+
   /**
    * {@inheritdoc}
    */

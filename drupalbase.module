@@ -1,6 +1,80 @@
 <?php
 
 use Symfony\Component\Yaml\Yaml;
+use Drupal\Core\Url;
+
+function drupalbase_get_node_content() {
+    $vars = array();
+    drupalbase_preprocess_set_content_vars($vars);
+    return $vars;
+}
+
+function drupalbase_preprocess_html(&$variables) {
+  drupalbase_preprocess_set_content_vars($variables);
+}
+
+function drupalbase_preprocess_node(&$variables) {
+  drupalbase_preprocess_set_content_vars($variables);
+}
+
+function drupalbase_preprocess_region(&$variables) {
+  drupalbase_preprocess_set_content_vars($variables);
+}
+
+function drupalbase_preprocess_set_content_vars(&$variables) {
+
+  $vars = false;
+  if (!empty($variables['elements']['#node'])) {
+    $vars = $variables['elements']['#node']->toArray();
+  }
+  else if ($node = \Drupal::routeMatch()->getParameter('node')) {
+    $vars = $node->toArray();
+  }
+  if (!empty($vars)) {
+    foreach ($vars as $name => $var) {
+      $vals = array();
+      foreach ($var as $v) {
+        if (!empty($v['width']) || !empty($v['display'])) {
+          // Image or Video
+          $file = Drupal\file\Entity\File::load($v['target_id']);
+          if (!empty($file)) {
+            $vals[] = array(
+              'alt' => empty($v['alt']) ? false: $v['alt'],
+              'id' => empty($v['target_id']) ? false : $v['target_id'],
+              'url' => $file->url()
+          );
+          }
+        }
+        else if (!empty($v['value'])) {
+          // Text
+          $vals[] = $v['value'];
+        }
+        elseif (!empty($v['target_id'])) {
+          // Target ID only
+          $vals[] = $v['target_id'];
+        }
+        elseif (!empty($v['uri'])) {
+          // Link
+          $vals[] = [
+              'title' => $v['title'] ?: false,
+              'url' => \Drupal\Core\Url::fromUri($v['uri'])
+          ];
+        }
+      }
+      $variables['v'][$name] = $vals;
+    }
+  }
+
+}
+
+/**
+* Redirect drupal users to admin page on login.
+*/
+function drupalbase_user_login($account) {
+  $response = new Symfony\Component\HttpFoundation\RedirectResponse('admin');
+  $response->send();
+  exit;
+}
 
 /* Theme hook - Load config from drupalbase.themehook.yml
  */
